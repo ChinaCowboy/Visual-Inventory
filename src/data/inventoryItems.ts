@@ -54,27 +54,66 @@ const createItemGrid = (
   return items;
 };
 
-// Pallets for Inventory 1 locations (2x2x1 grid on each location)
+// Pallets for Inventory 1 locations - Stacked vertically like screenshot
 // Location dimensions: 1.2m wide × 1.0m length × 2.0m height
-// Pallet dimensions: 0.45m × 0.38m × 0.35m each
-const palletWidth = 0.45;
-const palletLength = 0.38;
-const palletHeight = 0.35;
-const palletColor = "#50C878"; // Green color for pallets
+// Box dimensions: 0.25m × 0.2m × 0.15m each (small boxes stacked high)
+const boxWidth = 0.25;
+const boxLength = 0.2;
+const boxHeight = 0.15;
+const boxColor = "#FF8C42"; // Orange color like screenshot
+
+// Helper to create vertical stacks with varying heights
+const createVerticalStacks = (
+  baseId: string,
+  locationX: number,
+  locationY: number,
+  locationZ: number,
+  locationId: number,
+  materialId: number,
+  stackHeights: number[] // Array of heights for each column
+): InventoryItemData[] => {
+  const items: InventoryItemData[] = [];
+  const cols = stackHeights.length;
+  const spacing = 0.02;
+  const totalWidth = cols * boxWidth + (cols - 1) * spacing;
+  const startX = locationX - totalWidth / 2 + boxWidth / 2;
+  
+  stackHeights.forEach((height, col) => {
+    const x = startX + col * (boxWidth + spacing);
+    const z = locationZ;
+    
+    for (let level = 0; level < height; level++) {
+      const y = locationY + level * boxHeight;
+      items.push({
+        id: `${baseId}-C${col + 1}-L${level + 1}`,
+        name: `Box ${col + 1}-${level + 1}`,
+        type: 'pallet',
+        position: { x, y, z },
+        dimensions: { width: boxWidth, length: boxLength, height: boxHeight },
+        count: Math.floor(Math.random() * 20) + 10,
+        weight: Math.floor(Math.random() * 50) + 20,
+        color: boxColor,
+        metadata: { locationId, materialId }
+      });
+    }
+  });
+  
+  return items;
+};
 
 export const inventory1Pallets: InventoryItemData[] = [
-  // Bottom level pallets (on locations A1-R01 to A1-R05) - Single level
-  ...createItemGrid("PALLET-101", "Pallet", "pallet", 0.6, 0, 0.5, 1.2, 1.0, 2, 2, palletWidth, palletLength, palletHeight, palletColor, 101, 1001),
-  ...createItemGrid("PALLET-102", "Pallet", "pallet", 0.6, 0, 1.5, 1.2, 1.0, 2, 2, palletWidth, palletLength, palletHeight, palletColor, 102, 1002),
-  ...createItemGrid("PALLET-103", "Pallet", "pallet", 0.6, 0, 2.5, 1.2, 1.0, 2, 2, palletWidth, palletLength, palletHeight, palletColor, 103, 1003),
-  ...createItemGrid("PALLET-104", "Pallet", "pallet", 0.6, 0, 3.5, 1.2, 1.0, 2, 2, palletWidth, palletLength, palletHeight, palletColor, 104, 1004),
-  ...createItemGrid("PALLET-105", "Pallet", "pallet", 0.6, 0, 4.5, 1.2, 1.0, 2, 2, palletWidth, palletLength, palletHeight, palletColor, 105, 1005),
-  // Top level pallets (on locations A1-R06 to A1-R10) - Single level
-  ...createItemGrid("PALLET-106", "Pallet", "pallet", 0.6, 2, 0.5, 1.2, 1.0, 2, 2, palletWidth, palletLength, palletHeight, palletColor, 106, 1006),
-  ...createItemGrid("PALLET-107", "Pallet", "pallet", 0.6, 2, 1.5, 1.2, 1.0, 2, 2, palletWidth, palletLength, palletHeight, palletColor, 107, 1007),
-  ...createItemGrid("PALLET-108", "Pallet", "pallet", 0.6, 2, 2.5, 1.2, 1.0, 2, 2, palletWidth, palletLength, palletHeight, palletColor, 108, 1008),
-  ...createItemGrid("PALLET-109", "Pallet", "pallet", 0.6, 2, 3.5, 1.2, 1.0, 2, 2, palletWidth, palletLength, palletHeight, palletColor, 109, 1009),
-  ...createItemGrid("PALLET-110", "Pallet", "pallet", 0.6, 2, 4.5, 1.2, 1.0, 2, 2, palletWidth, palletLength, palletHeight, palletColor, 110, 1010)
+  // Bottom level locations - varying stack heights (like screenshot)
+  ...createVerticalStacks("PALLET-101", 0.6, 0, 0.5, 101, 1001, [6, 8, 10, 7]), // 4 columns with different heights
+  ...createVerticalStacks("PALLET-102", 0.6, 0, 1.5, 102, 1002, [9, 7, 11, 8]),
+  ...createVerticalStacks("PALLET-103", 0.6, 0, 2.5, 103, 1003, [5, 10, 6, 9]),
+  ...createVerticalStacks("PALLET-104", 0.6, 0, 3.5, 104, 1004, [8, 6, 9, 11]),
+  ...createVerticalStacks("PALLET-105", 0.6, 0, 4.5, 105, 1005, [7, 9, 8, 10]),
+  // Top level locations - varying stack heights
+  ...createVerticalStacks("PALLET-106", 0.6, 2, 0.5, 106, 1006, [6, 10, 7, 9]),
+  ...createVerticalStacks("PALLET-107", 0.6, 2, 1.5, 107, 1007, [8, 7, 11, 6]),
+  ...createVerticalStacks("PALLET-108", 0.6, 2, 2.5, 108, 1008, [9, 8, 6, 10]),
+  ...createVerticalStacks("PALLET-109", 0.6, 2, 3.5, 109, 1009, [7, 11, 9, 8]),
+  ...createVerticalStacks("PALLET-110", 0.6, 2, 4.5, 110, 1010, [10, 6, 8, 9])
 ];
 
 // Packs for Inventory 2 locations (4x4 grid on each location)
