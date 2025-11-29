@@ -34,6 +34,7 @@ export function convertInventoryToWarehouseData(
       weight: location.capacity || 0,
       metadata: {
         locationId: location.id,
+        locationName: location.name,
         code: location.code,
         description: location.description,
         status: location.status,
@@ -54,13 +55,6 @@ export function convertInventoryToWarehouseData(
   }
 
   return warehouseData;
-}
-
-function inferTypeFromCapacity(capacity: number): 'pack' | 'pallet' | 'product' | 'container' {
-  if (capacity > 1000) return 'pallet';
-  if (capacity > 500) return 'container';
-  if (capacity > 100) return 'pack';
-  return 'product';
 }
 
 /**

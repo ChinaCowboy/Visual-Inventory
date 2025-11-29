@@ -9,6 +9,7 @@ import './App.css';
 
 const App: React.FC = () => {
   const [showStats, setShowStats] = useState(false);
+  const [showTips, setShowTips] = useState(true);
   
   // Convert the inventory data to warehouse format
   const warehouseData = useMemo<WarehouseData>(() => {
@@ -35,6 +36,9 @@ const App: React.FC = () => {
         <div className="controls">
           <button onClick={() => setShowStats(!showStats)}>
             {showStats ? 'Hide' : 'Show'} Stats
+          </button>
+          <button onClick={() => setShowTips(!showTips)}>
+            {showTips ? 'Hide' : 'Show'} Tips
           </button>
         </div>
       </header>
@@ -86,7 +90,7 @@ const App: React.FC = () => {
       {/* 3D Canvas */}
       <div className="canvas-container">
         <Canvas shadows>
-          <InventoryScene warehouseData={warehouseData} showStats={showStats} />
+          <InventoryScene warehouseData={warehouseData} showStats={showStats} showTips={showTips} />
         </Canvas>
       </div>
 

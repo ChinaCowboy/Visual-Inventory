@@ -8,12 +8,14 @@ import { GridFloor } from './GridFloor';
 interface InventorySceneProps {
   warehouseData: WarehouseData;
   showStats?: boolean;
+  showTips?: boolean;
   enableShadows?: boolean;
 }
 
 export const InventoryScene: React.FC<InventorySceneProps> = ({ 
   warehouseData, 
   showStats = false,
+  showTips = true,
   enableShadows = true 
 }) => {
   const { dimensions, items } = warehouseData;
@@ -60,7 +62,7 @@ export const InventoryScene: React.FC<InventorySceneProps> = ({
         item.modelUrl ? (
           <GLBModel key={item.id} item={item} />
         ) : (
-          <InventoryBox key={item.id} item={item} />
+          <InventoryBox key={item.id} item={item} showTips={showTips} />
         )
       ))}
 
